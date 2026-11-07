@@ -1,12 +1,8 @@
 # models/
 
-Put model files here. Every `.onnx` / `.pt` file in this folder appears in the app's model list.
+Put packaged model files (`.onnx`, or Ultralytics `.pt`) here. Every model file in this folder appears in the app's
+model list; a model anywhere else can be opened with **Open…**.
 
-Model files are **not stored in git** (see `.gitignore`). Get them from the release zip
-(`validation_tool_<version>.zip`) or the team's model share:
-
-| File | What it is |
-|---|---|
-| `open_adas_v13s_single.onnx` | Open ADAS V13-S single model (detector + sign/light classifier + plate stage), with its description embedded |
+Model files are **not stored in git** (see `.gitignore`); they are distributed in the release zip.
 
 To add a new model, package it with `tools/package_model.py` (see "Packaging a new model" in the main README).

@@ -6,8 +6,8 @@
 #   bucket:  percent_4 -> one of the head's 4 values by the boundary numbers (<10%, 10-50%, 50-75%, >75%)
 # Values are then matched to the head's values (case-insensitive). No match -> "not comparable".
 # Heads without a rule fall back to a GT attribute with the head's own name.
-# Ported from v13/datasets/unified_dataset.py (_extract_open_adas_attributes, _bucket_occlusion_truncation,
-# SIGN_TYPE_SYNONYMS); the value vocabularies come from the model description.
+# The rules below match one dataset's annotation conventions (key spellings, percent buckets, synonyms);
+# edit them for your own GT. The value vocabularies always come from the model description.
 rules:
   - head: person_work
     classes: [person]

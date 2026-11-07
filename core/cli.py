@@ -41,8 +41,8 @@ def build_parser():
     p.add_argument("--include-masks", action="store_true", help="RLE masks in detections.jsonl")
     p.add_argument("--summary", action="store_true", help="write summary.html")
     p.add_argument("--recursive", action="store_true", help="image folder input: include subfolders")
-    p.add_argument("--gt", help="ground truth: CVAT XML, Open ADAS XML folder, COCO JSON or YOLO folder")
-    p.add_argument("--gt-format", default="auto", choices=["auto", "cvat", "openadas", "coco", "yolo"])
+    p.add_argument("--gt", help="ground truth: CVAT XML file or folder of .xml files, COCO JSON, or YOLO label folder")
+    p.add_argument("--gt-format", default="auto", choices=["auto", "cvat", "coco", "yolo"])
     p.add_argument("--map", action="append", default=[], metavar="GT_LABEL=TARGET",
                    help="map a GT label to a model class / mask, or =ignore")
     p.add_argument("--save-gt-map", action="store_true", help="remember --map choices in the GT folder")

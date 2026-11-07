@@ -14,7 +14,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from core.gt.cvat_xml import read_openadas_tree  # noqa: E402
+from core.gt.cvat_xml import read_cvat_folder  # noqa: E402
 
 
 def main():
@@ -22,7 +22,7 @@ def main():
     ap.add_argument("--xml-root", required=True, type=Path)
     ap.add_argument("--out", required=True, type=Path)
     a = ap.parse_args()
-    gt = read_openadas_tree(a.xml_root)
+    gt = read_cvat_folder(a.xml_root)
     frames = sorted(gt.frames.values(), key=lambda f: f.key)
     labels = sorted({b.label for f in frames for b in f.boxes})
     a.out.mkdir(parents=True, exist_ok=True)

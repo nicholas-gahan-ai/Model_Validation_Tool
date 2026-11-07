@@ -219,6 +219,7 @@ class GtEvaluator:
                  for t, a in self.mask_acc.items()}
         return {"gt_source": self.gt_source, "gt_format": self.gt_format, "images_matched": n,
                 "frames_without_gt": self.frames_without_gt, "thresholds": dict(thresholds),
+                "thresholds_text": self.desc.format_thresholds(thresholds),
                 "per_class": per, "mean": mean, "attributes": dict(self.attr),
                 "attributes_na": "" if self.attr else "the GT has no comparable attributes",
                 "masks": masks, "excluded": dict(sorted(self.excluded.items())),
@@ -226,7 +227,7 @@ class GtEvaluator:
                 "no_prediction_classes": [c for c, r in per.items() if r["no_predictions"]]}
 
 
-POLYLINE_WIDTH = 3   # scripts/rasterize_open_adas_polylines.py LINE_WIDTH
+POLYLINE_WIDTH = 3   # GT polylines are rasterised at 3 px (original resolution)
 
 
 def _clean(x):

@@ -369,14 +369,17 @@ class MainWindow(QMainWindow):
 
     # ---------------------------------------------------------------------------------------------------- inputs
     def open_input_dialog(self):
-        p, _ = QFileDialog.getOpenFileName(self, "Open video (Cancel to pick an image folder)",
-                                           self.left.video_path.text(),
-                                           "Videos (*.mp4 *.avi *.mov *.mkv *.m4v *.mpg *.mpeg *.wmv *.webm *.ts);;All files (*)")
-        if p:
-            self.left.video_path.setText(p); self.left.radio["video"].setChecked(True); return
-        p = QFileDialog.getExistingDirectory(self, "Open image folder", self.left.folder_path.text())
-        if p:
-            self.left.folder_path.setText(p); self.left.radio["folder"].setChecked(True)
+        """Ctrl+O: browse for the input type that is selected (video file or image folder)."""
+        L = self.left
+        kind = L.input_kind()
+        if kind == "folder":
+            L._browse_folder(L.folder_path)
+        elif kind == "camera":
+            L.camera_combo.setFocus()
+        elif kind == "rtsp":
+            L.rtsp_url.setFocus()
+        else:
+            L._browse_video(L.video_path)
 
     def _probe_cameras(self):
         from core.sources import CameraSource
@@ -634,7 +637,7 @@ class MainWindow(QMainWindow):
         if not path:
             self.right.show_gt(False)
             return True
-        fmt = {"Auto-detect": "auto", "CVAT XML 1.1": "cvat", "Open ADAS XML (per image)": "openadas",
+        fmt = {"Auto-detect": "auto", "CVAT XML 1.1": "cvat",
                "COCO JSON": "coco", "YOLO txt": "yolo"}.get(self.left.gt_format.currentText(), "auto")
         QApplication.setOverrideCursor(Qt.WaitCursor)
         try:

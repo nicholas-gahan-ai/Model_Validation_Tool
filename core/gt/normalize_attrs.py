@@ -14,7 +14,7 @@ NOT_COMPARABLE = object()
 
 
 def bucket_percent_4(raw) -> int:
-    """<10%, 10-50%, 50-75%, >75% -> 0..3, -1 if unrecognised (ported from v13 datasets/unified_dataset.py)."""
+    """<10%, 10-50%, 50-75%, >75% -> 0..3, -1 if unrecognised."""
     if raw is None:
         return -1
     s = str(raw).strip()

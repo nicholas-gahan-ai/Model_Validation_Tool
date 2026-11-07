@@ -225,7 +225,7 @@ class ZoomDialog(QDialog):
                 "<table cellspacing=3>"
                 f"<tr><td style='color:#9AA0AA'>confidence</td><td>{box.conf:.4f}</td></tr>"
                 f"<tr><td style='color:#9AA0AA'>slot</td><td>{box.slot if box.slot >= 0 else '—'}</td></tr>"
-                f"<tr><td style='color:#9AA0AA'>source</td><td>{e(box.source)}</td></tr>"
+                + (f"<tr><td style='color:#9AA0AA'>from</td><td>extra box source</td></tr>" if box.slot < 0 else "") +
                 f"<tr><td style='color:#9AA0AA'>box (px)</td><td>{x1:.1f}, {y1:.1f}, {x2:.1f}, {y2:.1f}"
                 f"<br>{x2 - x1:.1f} × {y2 - y1:.1f}</td></tr></table>"]
         heads = all_heads if all_heads else box.attributes
@@ -308,7 +308,7 @@ class MetricsDialog(QDialog):
         self.resize(900, 640)
         v = QVBoxLayout(self)
         m = metrics
-        th = ", ".join(f"{k}={val:.2f}" for k, val in m.get("thresholds", {}).items())
+        th = m.get("thresholds_text") or ", ".join(f"{k} {val:.2f}" for k, val in m.get("thresholds", {}).items())
         hdr = QLabel(f"<b>{m['images_matched']}</b> frames with GT ({m['frames_without_gt']} without) · "
                      f"{html.escape(str(m['gt_format']))}: {html.escape(str(m['gt_source']))}<br>"
                      f"<span style='color:#9AA0AA'>Precision / recall at the thresholds ({html.escape(th)}), IoU 0.5. "

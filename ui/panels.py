@@ -105,7 +105,7 @@ class LeftPanel(QWidget):
     device_changed = Signal(str)
 
     INPUT_KINDS = ("video", "folder", "camera", "rtsp")
-    GT_FORMATS = ["Auto-detect", "CVAT XML 1.1", "Open ADAS XML (per image)", "COCO JSON", "YOLO txt"]
+    GT_FORMATS = ["Auto-detect", "CVAT XML 1.1", "COCO JSON", "YOLO txt"]
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -137,7 +137,7 @@ class LeftPanel(QWidget):
         self.camera_combo.setEditable(True)
         cl.addWidget(self.camera_combo, 1)
         self.probe_btn = QPushButton("Probe"); cl.addWidget(self.probe_btn)
-        self.rtsp_url = QLineEdit(); self.rtsp_url.setPlaceholderText("rtsp://host:8554/stream")
+        self.rtsp_url = QLineEdit(); self.rtsp_url.setPlaceholderText("rtsp://user:pass@camera-ip:554/stream")
         for i, w in enumerate((self.video_path, self.folder_path, cam, self.rtsp_url)):
             g.addWidget(w, i, 1)
         g.setColumnStretch(1, 1)
@@ -196,10 +196,18 @@ class LeftPanel(QWidget):
             row.setText(p); self.radio["folder"].setChecked(True)
 
     def _browse_gt(self, row):
-        p, _ = QFileDialog.getOpenFileName(self, "Ground truth file (Cancel to pick a folder)", row.text(),
-                                           "Annotations (*.xml *.json);;All files (*)")
-        if not p:
-            p = QFileDialog.getExistingDirectory(self, "Ground truth folder (YOLO txt / Open ADAS XML tree)", row.text())
+        """Ground truth is a file (CVAT .xml, COCO .json) or a folder (CVAT .xml files, YOLO .txt): ask which."""
+        from PySide6.QtWidgets import QMenu
+        m = QMenu(self)
+        f = m.addAction("Annotation file (CVAT .xml, COCO .json)…")
+        d = m.addAction("Annotation folder (CVAT .xml files, YOLO .txt)…")
+        a = m.exec(row.btn.mapToGlobal(row.btn.rect().bottomLeft()))
+        p = ""
+        if a is f:
+            p, _ = QFileDialog.getOpenFileName(self, "Ground truth file", row.text(),
+                                               "Annotations (*.xml *.json);;All files (*)")
+        elif a is d:
+            p = QFileDialog.getExistingDirectory(self, "Ground truth folder", row.text())
         if p:
             row.setText(p)
 

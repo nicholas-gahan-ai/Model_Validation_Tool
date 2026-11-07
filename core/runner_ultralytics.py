@@ -108,7 +108,7 @@ class UltralyticsRunner:
         self.desc = parse(d)
         model.description = self.desc
         self.decoder = UltraDecoder(self.desc, self.names, seg)
-        self.provider = f"PyTorch {'CUDA' if self.device == 'GPU' else 'CPU'}"
+        self.provider = "PyTorch CUDA" if self.device == "GPU" else "PyTorch"
         # warm-up so the first frame's timing is representative
         self.yolo.predict(np.zeros((imgsz, imgsz, 3), np.uint8), conf=INFER_CONF, device=self.torch_device,
                           verbose=False, imgsz=imgsz)

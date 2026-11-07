@@ -301,7 +301,8 @@ class OnnxRunner:
 
     @property
     def device_label(self) -> str:
-        return f"{self.device} ({self.provider.replace('ExecutionProvider', '')})"
+        p = self.provider.replace("ExecutionProvider", "")
+        return self.device if p == self.device else f"{self.device} ({p})"
 
     def infer_raw(self, frame_bgr: np.ndarray, frame_index: int = 0, timestamp_s: float | None = None,
                   name: str | None = None) -> RawResult:

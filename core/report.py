@@ -80,7 +80,7 @@ def write_summary(sess) -> Path:
     for k, v in [("Model", prov["model_name"]), ("Version", prov["model_version"] or "—"), ("File", prov["model_file"]),
                  ("sha256", f"<code>{E_(prov['model_sha256'])}</code>"), ("Device", prov["device"]),
                  ("Input", prov["input"]), ("Started", prov["started"]),
-                 ("Thresholds", ", ".join(f"{k}={v:.2f}" for k, v in prov["thresholds"].items())),
+                 ("Thresholds", d.format_thresholds(prov["thresholds"])),
                  ("Frames processed", f"{sess.frames}"), ("Frames with ≥1 detection", f"{sess.frames_with_det}"),
                  ("Skipped (bad) frames", f"{len(sess.bad_frames)}"),
                  ("Throughput", f"{fps:.1f} fps over {sess.wall_s:.1f} s (incl. saving and display)"),

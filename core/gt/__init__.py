@@ -140,8 +140,7 @@ class GtSet:
         return None
 
 
-FORMATS = {"auto": "Auto-detect", "cvat": "CVAT XML 1.1", "openadas": "Open ADAS XML (per image)",
-           "coco": "COCO JSON", "yolo": "YOLO txt"}
+FORMATS = {"auto": "Auto-detect", "cvat": "CVAT XML 1.1", "coco": "COCO JSON", "yolo": "YOLO txt"}
 
 
 def detect_format(path: Path) -> str:
@@ -164,7 +163,7 @@ def detect_format(path: Path) -> str:
         xml = next(path.rglob("*.xml"), None)
         txt = next((p for p in path.rglob("*.txt") if p.name not in ("classes.txt", "obj.names")), None)
         if xml is not None:
-            return "openadas"
+            return "cvat"
         if txt is not None:
             return "yolo"
         js = list(path.glob("*.json"))
@@ -178,17 +177,15 @@ def load_gt(path: str | Path, fmt: str = "auto", class_names: list[str] | None =
     path = Path(path).expanduser()
     if fmt in ("auto", "", None):
         fmt = detect_format(path)
-    if fmt == "cvat":
-        from .cvat_xml import read_cvat_xml
+    if fmt in ("cvat", "cvat-folder", "openadas"):
+        # one CVAT XML file, or a folder of them (e.g. one file per image), searched recursively
+        from .cvat_xml import read_cvat_folder, read_cvat_xml
         if path.is_dir():
-            files = sorted(path.glob("*.xml"))
-            if len(files) != 1:
-                raise GtError(f"{path}: pick the CVAT XML file (found {len(files)} .xml files)")
-            path = files[0]
+            files = list(path.rglob("*.xml"))
+            if not files:
+                raise GtError(f"{path}: no CVAT .xml files")
+            return read_cvat_xml(files[0]) if len(files) == 1 else read_cvat_folder(path)
         return read_cvat_xml(path)
-    if fmt == "openadas":
-        from .cvat_xml import read_openadas_tree
-        return read_openadas_tree(path)
     if fmt == "coco":
         from .coco import read_coco
         if path.is_dir():

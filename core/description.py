@@ -120,6 +120,17 @@ class ModelDescription:
                 names.append(e.cls)
         return names
 
+    def threshold_labels(self) -> dict[str, str]:
+        """Display name per threshold key: the Conf slider and one per extra box source."""
+        t = {"conf": "Conf"} if self.detection else {}
+        for e in self.extra_boxes:
+            t[e.output] = e.threshold_label or f"{e.cls} cutoff"
+        return t
+
+    def format_thresholds(self, th: dict) -> str:
+        names = self.threshold_labels()
+        return ", ".join(f"{names.get(k, k)} {v:.2f}" for k, v in th.items())
+
     def output_ranks(self) -> dict[str, int]:
         """Rank of one image's output per role; extra leading axes are batch axes (slot 0 is used)."""
         r = {}

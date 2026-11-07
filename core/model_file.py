@@ -160,5 +160,5 @@ def description_template(path: Path, inputs: dict, outputs: dict) -> str:
                              f"class_names: [{cls}], ignore: [c0]}}   # EDIT class names")
     lines.append("# outputs in the graph (name: shape):")
     lines += [f"#   {n}: {s}" for n, s in outputs.items()]
-    lines.append("# attribute heads, extra box sources and tags: see README 'Packaging a new model'")
+    lines.append("# attribute heads, extra box sources and tags: see README 'Adding a model'")
     return "\n".join(lines) + "\n"

@@ -1,5 +1,4 @@
-"""CVAT XML 1.1 ("CVAT for images" and "CVAT for video") and the Open ADAS original layout
-(the same XML, one file per image, in a folder tree)."""
+"""CVAT XML 1.1 ("CVAT for images" and "CVAT for video"), as one file or as a folder tree with one XML per image."""
 from __future__ import annotations
 
 import xml.etree.ElementTree as ET
@@ -9,7 +8,7 @@ from . import GtBox, GtError, GtFrame, GtSet
 
 
 def parse_points(s: str) -> list[tuple[float, float]]:
-    """'x,y;x,y' -> [(x, y), ...] (scripts/convert_open_adas_to_canonical.py parse_points)."""
+    """'x,y;x,y' -> [(x, y), ...]"""
     pts = []
     for p in (s or "").strip().split(";"):
         if not p.strip():
@@ -90,7 +89,7 @@ def read_cvat_xml(path: Path) -> GtSet:
     return GtSet(frames, "cvat", path, by_index)
 
 
-def read_openadas_tree(folder: Path) -> GtSet:
+def read_cvat_folder(folder: Path) -> GtSet:
     files = sorted(Path(folder).rglob("*.xml"))
     if not files:
         raise GtError(f"{folder}: no .xml files")
@@ -107,4 +106,4 @@ def read_openadas_tree(folder: Path) -> GtSet:
             name = Path(f.key).name
             f.key = str(rel / name) if str(rel) != "." else name
             frames[f.key] = f
-    return GtSet(frames, "openadas", folder)
+    return GtSet(frames, "cvat", folder)
