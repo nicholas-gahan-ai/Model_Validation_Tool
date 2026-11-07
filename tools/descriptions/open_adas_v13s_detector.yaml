@@ -1,0 +1,85 @@
+# Sidecar description for the metadata-less V13-S detector ONNX (final_model_v13/open_adas_v13_s.onnx).
+# raw_detections is sorted by confidence and the graph keeps rows with conf >= 0.35 (kept_boxes); the attr_<head>
+# rows belong to those kept rows, i.e. to detection slots 0..N-1, so the heads use indexing: slot.
+# Load it in the app's description dialog (Load YAML…), or copy it beside the ONNX as <model>.description.yaml.
+schema: gahan-model-description/1
+name: Open ADAS V13-S detector
+version: v13s-detector
+created: '2026-11-06'
+precision: fp32
+input:
+  name: image
+  batch: 1
+  layout: NCHW
+  width: 832
+  height: 480
+  resize: letterbox
+  pad_value: 114
+  color: RGB
+  scale: 0.00392156862745098
+  dtype: float32
+  output_batch_dim: true
+detection:
+  output: raw_detections
+  format: xyxy_conf_cls
+  coords: input_px
+  classes: [Number plate, bus, car, motorcycle, other, person, rider, traffic light, traffic sign, truck, auto rickshaw]
+  conf_threshold: 0.35
+attributes:
+  display_prob_threshold: 0.5
+  heads:
+  - name: person_work
+    output: attr_person_work
+    values: [Standing, Walking, Carrying Object, Lying Down, Sitting]
+    indexing: slot
+  - name: rider_pillion
+    output: attr_rider_pillion
+    values: ['no', 'yes']
+    indexing: slot
+  - name: other_vehicle_type
+    output: attr_other_vehicle_type
+    values: [LCV, HCV]
+    indexing: slot
+  - name: occlusion
+    output: attr_occlusion
+    values: [<10%, 10-50%, 50-75%, '>75%']
+    indexing: slot
+  - name: truncation
+    output: attr_truncation
+    values: [<10%, 10-50%, 50-75%, '>75%']
+    indexing: slot
+  - name: sign_type
+    output: attr_sign_type
+    values: [chevron_left, Speed Limit 80, no_stopping_standing, object_hazard_marker, Speed Limit 30, speed_bump_ahead, chevron_right, go slow, no_parking, overtaking_prohibited, Speed Limit 40, keep_left,
+      stop, left curve, Men at Work, Pedestrian Crossing, Speed Limit 60, right curve, Speed Limit 120, Merge Sign, Gap in Median, narrow bridge, steep Descent, keep_right, left_turn_prohibited, cycle_crossing,
+      Speed Limit 50, one_way_right, Bus stop, Side Road Left, Speed Limit 20, danger_warning, one_way_left, petrol_pump, accident prone area, Children crossing, parking, Steep ascent, Y Intersection, straight_or_left,
+      crossroads, School ahead, no_entry, u_turn_prohibited, T Intersection, right turn]
+    indexing: slot
+  - name: light_state
+    output: attr_light_state
+    values: ['Off', Red, Yellow, Green, Arrowstraight, ArrowLeft, ArrowStraightLeft, ArrowUTurnRight]
+    indexing: slot
+  applies_to:
+    person: [person_work]
+    rider: [rider_pillion]
+    other: [other_vehicle_type]
+    traffic sign: [sign_type]
+    traffic light: [light_state]
+  always: [occlusion, truncation]
+  activation: none
+masks:
+- name: lane
+  output: lane_logits
+  type: binary
+  activation: sigmoid
+  threshold: 0.5
+  color: '#FFD400'
+- name: drivable
+  output: drivable_logits
+  type: classes
+  class_names: [background, direct, alternative]
+  ignore: [background]
+  colors:
+    direct: '#22C55E'
+    alternative: '#3B82F6'
+tags: []

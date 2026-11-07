@@ -1,0 +1,2 @@
+# Optional: Ultralytics .pt models (pulls in PyTorch, ~2 GB). Install with: setup_linux.sh --with-ultralytics
+ultralytics>=8.3

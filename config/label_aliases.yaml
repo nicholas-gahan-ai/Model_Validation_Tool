@@ -1,0 +1,13 @@
+# GT label -> model name. Matching is case-insensitive and treats space, "_" and "-" as the same.
+# A target is a model class name, a mask name, or "mask/class" for one class of a class-map mask.
+# Labels in `ignore` are skipped without asking. Anything else unmatched opens the mapping dialog;
+# that choice is saved to <gt folder>/.gahan_label_map.yaml.
+aliases:
+  other: [other vehicle, other_vehicle, LCV]
+  Number plate: [number_plate, Number Plate, plate, license plate, licence plate]
+  traffic light: [traffic_light]
+  traffic sign: [traffic_sign]
+  auto rickshaw: [auto_rickshaw, autorickshaw]
+  lane: [lane markings, lane_marking, lane marking]
+  drivable/direct: [drivable_area, drivable area]
+ignore: [road boundaries, Image]

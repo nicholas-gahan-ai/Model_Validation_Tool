@@ -1,0 +1,39 @@
+# How raw GT attribute keys/values become the model's attribute head values (used for attribute agreement).
+# One rule per head; a rule applies when the model has a head of that name.
+#   classes: model classes the rule applies to (omit = every class)
+#   keys:    raw attribute keys to read, first present wins
+#   synonyms: raw value -> canonical value, before matching
+#   bucket:  percent_4 -> one of the head's 4 values by the boundary numbers (<10%, 10-50%, 50-75%, >75%)
+# Values are then matched to the head's values (case-insensitive). No match -> "not comparable".
+# Heads without a rule fall back to a GT attribute with the head's own name.
+# Ported from v13/datasets/unified_dataset.py (_extract_open_adas_attributes, _bucket_occlusion_truncation,
+# SIGN_TYPE_SYNONYMS); the value vocabularies come from the model description.
+rules:
+  - head: person_work
+    classes: [person]
+    keys: [Work, work]
+  - head: rider_pillion
+    classes: [rider]
+    keys: [pillion]
+  - head: other_vehicle_type
+    classes: [other]
+    keys: [Vehicle type, Vehicle_type, vehicle_type]
+  - head: sign_type
+    classes: [traffic sign]
+    keys: [Type, type]
+    synonyms:
+      steep_descent: steep Descent
+      narrow_bridge_ahead: narrow bridge
+      pedestrian_crossing: Pedestrian Crossing
+      U turn prohibited: u_turn_prohibited
+      Cross_road_ahead: crossroads
+      Danger: danger_warning
+  - head: light_state
+    classes: [traffic light]
+    keys: [State, state]
+  - head: occlusion
+    keys: [occlusion]
+    bucket: percent_4
+  - head: truncation
+    keys: [Truncation, truncation]
+    bucket: percent_4

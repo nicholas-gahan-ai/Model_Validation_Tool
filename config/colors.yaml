@@ -1,0 +1,6 @@
+# Optional per-class box colours, keyed by the model's class name (case-insensitive; space, _ and - are equal).
+# Classes not listed get the built-in 20-colour palette in class-id order.
+# Example:
+#   car: "#3CB44B"
+#   truck: "#4363D8"
+classes: {}

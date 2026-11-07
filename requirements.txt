@@ -1,0 +1,9 @@
+# Gahan AI Validation Viewer runtime dependencies.
+# ONNX Runtime is installed by setup_linux.sh / setup_windows.bat:
+#   NVIDIA GPU present -> onnxruntime-gpu[cuda,cudnn]   (CUDA 12 / cuDNN 9 from NVIDIA pip wheels; no system CUDA needed)
+#   otherwise          -> onnxruntime                   (CPU)
+PySide6>=6.6,<6.10
+opencv-python-headless>=4.8,<5
+numpy>=1.24,<3
+PyYAML>=6.0
+onnx>=1.15

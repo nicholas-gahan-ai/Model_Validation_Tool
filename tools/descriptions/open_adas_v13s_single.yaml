@@ -1,0 +1,97 @@
+schema: gahan-model-description/1
+name: Open ADAS V13-S single model
+version: v13s-single-2026-11-06
+created: '2026-11-06'
+precision: fp16
+input:
+  name: image
+  batch: 2
+  layout: NCHW
+  width: 832
+  height: 480
+  resize: letterbox
+  pad_value: 114
+  color: RGB
+  scale: 0.00392156862745098
+  dtype: float32
+  output_batch_dim: true
+detection:
+  output: raw_detections
+  format: xyxy_conf_cls
+  coords: input_px
+  classes: [Number plate, bus, car, motorcycle, other, person, rider, traffic light, traffic sign, truck, auto rickshaw]
+  conf_threshold: 0.35
+attributes:
+  display_prob_threshold: 0.5
+  heads:
+  - name: person_work
+    output: attr_person_work
+    values: [Standing, Walking, Carrying Object, Lying Down, Sitting]
+    indexing: slot
+    slots: 32
+  - name: rider_pillion
+    output: attr_rider_pillion
+    values: ['no', 'yes']
+    indexing: slot
+    slots: 32
+  - name: other_vehicle_type
+    output: attr_other_vehicle_type
+    values: [LCV, HCV]
+    indexing: slot
+    slots: 32
+  - name: occlusion
+    output: attr_occlusion
+    values: [<10%, 10-50%, 50-75%, '>75%']
+    indexing: slot
+    slots: 32
+  - name: truncation
+    output: attr_truncation
+    values: [<10%, 10-50%, 50-75%, '>75%']
+    indexing: slot
+    slots: 32
+  - name: sign_type
+    output: sign_type
+    values: [chevron_left, Speed Limit 80, no_stopping_standing, object_hazard_marker, Speed Limit 30, speed_bump_ahead, chevron_right, go slow, no_parking, overtaking_prohibited, Speed Limit 40, keep_left,
+      stop, left curve, Men at Work, Pedestrian Crossing, Speed Limit 60, right curve, Speed Limit 120, Merge Sign, Gap in Median, narrow bridge, steep Descent, keep_right, left_turn_prohibited, cycle_crossing,
+      Speed Limit 50, one_way_right, Bus stop, Side Road Left, Speed Limit 20, danger_warning, one_way_left, petrol_pump, accident prone area, Children crossing, parking, Steep ascent, Y Intersection, straight_or_left,
+      crossroads, School ahead, no_entry, u_turn_prohibited, T Intersection, right turn]
+    indexing: slot_map
+    slot_map: sign_light_slots
+  - name: light_state
+    output: light_state
+    values: ['Off', Red, Yellow, Green, Arrowstraight, ArrowLeft, ArrowStraightLeft, ArrowUTurnRight]
+    indexing: slot_map
+    slot_map: sign_light_slots
+  applies_to:
+    person: [person_work]
+    rider: [rider_pillion]
+    other: [other_vehicle_type]
+    traffic sign: [sign_type]
+    traffic light: [light_state]
+  always: [occlusion, truncation]
+  activation: none
+extra_boxes:
+- output: plates
+  format: xyxy_score
+  coords: input_px
+  class: Number plate
+  merge_with_detection_class: true
+  nms_iou: 0.5
+  threshold: 0.45
+  threshold_label: Plate cutoff
+masks:
+- name: lane
+  output: lane_logits
+  type: binary
+  activation: sigmoid
+  threshold: 0.5
+  color: '#FFD400'
+- name: drivable
+  output: drivable_logits
+  type: classes
+  class_names: [background, direct, alternative]
+  ignore: [background]
+  colors:
+    direct: '#22C55E'
+    alternative: '#3B82F6'
+tags: []

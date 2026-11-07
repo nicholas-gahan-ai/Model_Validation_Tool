@@ -80,3 +80,12 @@ yarn.lock
 
 # VSCode
 .vscode
+
+# Validation Viewer: virtual environment created by setup_linux.sh / setup_windows.bat
+.venv/
+
+# Model files are distributed in the release zip / model share, not in git
+models/*.onnx
+models/*.onnx.data
+models/*.pt
+models/*.description.yaml
